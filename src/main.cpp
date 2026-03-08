@@ -18,7 +18,7 @@ int main() {
     threads[4] = TCB::createThread(workerBodyD);
     printString("ThreadD created\n");
 
-    Riscv::w_stvec((uint64) &Riscv::supervisorTrap);
+    Riscv::w_stvec((uint64) &Riscv::supervisorTrapVector | 0x1);
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     while (!(threads[1]->isFinished() &&

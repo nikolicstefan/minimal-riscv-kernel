@@ -68,11 +68,11 @@ public:
     // write register sstatus
     static void w_sstatus(uint64 sstatus);
 
-    // supervisor trap
-    static void supervisorTrap();
+    // supervisor trap vector
+    static void supervisorTrapVector();
 
 private:
-    // supervisor trap handler
+    // supervisor trap handler function
     static void handleSupervisorTrap();
 };
 
