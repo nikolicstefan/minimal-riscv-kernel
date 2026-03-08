@@ -8,6 +8,13 @@ void Riscv::popSppSpie() {
     __asm__ volatile("sret");
 }
 
+void Riscv::stopEmulator() {
+    uint32 stopValue = 0x5555;
+    uint64 stopAddress = 0x100000;
+    __asm__ volatile("sw %[stopValue], (%[stopAddress])" : :
+        [stopValue] "r"(stopValue), [stopAddress] "r"(stopAddress));
+}
+
 void Riscv::handleSupervisorTrap() {
     uint64 scause = r_scause();
     if (scause == 0x0000000000000008UL || scause == 0x0000000000000009UL) {

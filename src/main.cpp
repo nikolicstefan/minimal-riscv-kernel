@@ -1,9 +1,12 @@
+#include "../h/MemoryAllocator.hpp"
 #include "../h/print.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/TCB.hpp"
 #include "../h/workers.hpp"
 
 int main() {
+    MemoryAllocator::memInit();
+
     TCB *threads[5];
 
     threads[0] = TCB::createThread(nullptr);
@@ -32,6 +35,8 @@ int main() {
         delete thread;
     }
     printString("Finished\n");
+
+    Riscv::stopEmulator();
 
     return 0;
 }

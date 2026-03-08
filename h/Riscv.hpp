@@ -71,6 +71,9 @@ public:
     // supervisor trap vector
     static void supervisorTrapVector();
 
+    // stop emulator
+    static void stopEmulator();
+
 private:
     // supervisor trap handler function
     static void handleSupervisorTrap();
