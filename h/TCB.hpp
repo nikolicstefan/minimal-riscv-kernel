@@ -23,6 +23,14 @@ public:
 
     uint64 getTimeSlice() const { return timeSlice; }
 
+    void *operator new(size_t size);
+
+    void *operator new[](size_t size);
+
+    void operator delete(void *addr) noexcept;
+
+    void operator delete[](void *addr) noexcept;
+
 private:
     friend class Riscv;
 

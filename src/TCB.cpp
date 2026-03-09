@@ -29,3 +29,23 @@ void TCB::threadWrapper() {
     running->setFinished(true);
     yield();
 }
+
+void *TCB::operator new(size_t size) {
+    size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+    size /= MEM_BLOCK_SIZE;
+    return MemoryAllocator::memAlloc(size);
+}
+
+void *TCB::operator new[](size_t size) {
+    size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+    size /= MEM_BLOCK_SIZE;
+    return MemoryAllocator::memAlloc(size);
+}
+
+void TCB::operator delete(void *addr) noexcept {
+    MemoryAllocator::memFree(addr);
+}
+
+void TCB::operator delete[](void *addr) noexcept {
+    MemoryAllocator::memFree(addr);
+}

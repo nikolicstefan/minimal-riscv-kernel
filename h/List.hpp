@@ -1,6 +1,9 @@
 #ifndef LIST_HPP
 #define LIST_HPP
 
+#include "MemoryAllocator.hpp"
+#include "../lib/hw.h"
+
 template<typename T>
 class List {
 private:
@@ -9,6 +12,26 @@ private:
         Elem *next;
 
         Elem(T *data, Elem *next) : data(data), next(next) {}
+
+        void *operator new(size_t size) {
+            size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+            size /= MEM_BLOCK_SIZE;
+            return MemoryAllocator::memAlloc(size);
+        }
+
+        void *operator new[](size_t size) {
+            size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+            size /= MEM_BLOCK_SIZE;
+            return MemoryAllocator::memAlloc(size);
+        }
+
+        void operator delete(void *addr) noexcept {
+            MemoryAllocator::memFree(addr);
+        }
+
+        void operator delete[](void *addr) noexcept {
+            MemoryAllocator::memFree(addr);
+        }
     };
 
     Elem *head, *tail;
@@ -74,6 +97,26 @@ public:
     T *peekLast() {
         if (!tail) { return 0; }
         return tail->data;
+    }
+
+    void *operator new(size_t size) {
+        size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+        size /= MEM_BLOCK_SIZE;
+        return MemoryAllocator::memAlloc(size);
+    }
+
+    void *operator new[](size_t size) {
+        size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+        size /= MEM_BLOCK_SIZE;
+        return MemoryAllocator::memAlloc(size);
+    }
+
+    void operator delete(void *addr) noexcept {
+        MemoryAllocator::memFree(addr);
+    }
+
+    void operator delete[](void *addr) noexcept {
+        MemoryAllocator::memFree(addr);
     }
 };
 
