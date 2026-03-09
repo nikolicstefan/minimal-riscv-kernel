@@ -5,6 +5,8 @@
 
 extern void printString(char const *string);
 
-extern void printInteger(uint64 integer);
+extern void printValueDecimal(uint64 value);
+
+extern void printValueHexadecimal(uint64 value);
 
 #endif // PRINT_HPP

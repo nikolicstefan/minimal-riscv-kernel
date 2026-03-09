@@ -1,16 +1,29 @@
 #include "../h/MemoryAllocator.hpp"
 #include "../h/print.hpp"
 #include "../h/Riscv.hpp"
+#include "../h/syscall_c.h"
 #include "../h/TCB.hpp"
 #include "../h/workers.hpp"
 
 int main() {
     MemoryAllocator::memInit();
 
+    Riscv::w_stvec((uint64) &Riscv::supervisorTrapVector | 0x1);
+
+    printValueDecimal(mem_get_free_space());
+    printString("\n");
+    printValueDecimal(mem_get_largest_free_block());
+    printString("\n");
+
     TCB *threads[5];
 
     threads[0] = TCB::createThread(nullptr);
     TCB::running = threads[0];
+
+    printValueDecimal(mem_get_free_space());
+    printString("\n");
+    printValueDecimal(mem_get_largest_free_block());
+    printString("\n");
 
     threads[1] = TCB::createThread(workerBodyA);
     printString("ThreadA created\n");
@@ -21,7 +34,11 @@ int main() {
     threads[4] = TCB::createThread(workerBodyD);
     printString("ThreadD created\n");
 
-    Riscv::w_stvec((uint64) &Riscv::supervisorTrapVector | 0x1);
+    printValueDecimal(mem_get_free_space());
+    printString("\n");
+    printValueDecimal(mem_get_largest_free_block());
+    printString("\n");
+
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     while (!(threads[1]->isFinished() &&
@@ -34,8 +51,12 @@ int main() {
     for (auto &thread: threads) {
         delete thread;
     }
-    printString("Finished\n");
+    printValueDecimal(mem_get_free_space());
+    printString("\n");
+    printValueDecimal(mem_get_largest_free_block());
+    printString("\n");
 
+    printString("Finished\n");
     Riscv::stopEmulator();
 
     return 0;

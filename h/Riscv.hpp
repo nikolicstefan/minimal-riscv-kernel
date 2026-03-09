@@ -8,6 +8,66 @@ public:
     // pop sstatus.spp and sstatus.spie bits (has to be a non inline function)
     static void popSppSpie();
 
+    // peek register a0 value on the stack
+    static uint64 peek_a0();
+
+    // replace register a0 value on the stack
+    static void replace_a0(uint64 a0);
+
+    // peek register a1 value on the stack
+    static uint64 peek_a1();
+
+    // replace register a1 value on the stack
+    static void replace_a1(uint64 a1);
+
+    // peek register a2 value on the stack
+    static uint64 peek_a2();
+
+    // replace register a2 value on the stack
+    static void replace_a2(uint64 a2);
+
+    // peek register a3 value on the stack
+    static uint64 peek_a3();
+
+    // replace register a3 value on the stack
+    static void replace_a3(uint64 a3);
+
+    // peek register a4 value on the stack
+    static uint64 peek_a4();
+
+    // replace register a4 value on the stack
+    static void replace_a4(uint64 a4);
+
+    // read register a0
+    static uint64 r_a0();
+
+    // write register a0
+    static void w_a0(uint64 a0);
+
+    // read register a1
+    static uint64 r_a1();
+
+    // write register a1
+    static void w_a1(uint64 a1);
+
+    // read register a2
+    static uint64 r_a2();
+
+    // write register a2
+    static void w_a2(uint64 a2);
+
+    // read register a3
+    static uint64 r_a3();
+
+    // write register a3
+    static void w_a3(uint64 a3);
+
+    // read register a4
+    static uint64 r_a4();
+
+    // write register a4
+    static void w_a4(uint64 a4);
+
     // read register scause
     static uint64 r_scause();
 
@@ -77,7 +137,110 @@ public:
 private:
     // supervisor trap handler function
     static void handleSupervisorTrap();
+
+    // print error details
+    static void printErrorDetails();
 };
+
+inline uint64 Riscv::peek_a0() {
+    uint64 volatile a0;
+    __asm volatile ("ld %[a0], 10 * 8(fp)" : [a0] "=r"(a0));
+    return a0;
+}
+
+inline void Riscv::replace_a0(uint64 a0) {
+    __asm__ volatile ("sd %[a0], 10 * 8(fp)" : : [a0] "r"(a0));
+}
+
+inline uint64 Riscv::peek_a1() {
+    uint64 volatile a1;
+    __asm volatile ("ld %[a1], 11 * 8(fp)" : [a1] "=r"(a1));
+    return a1;
+}
+
+inline void Riscv::replace_a1(uint64 a1) {
+    __asm__ volatile ("sd %[a1], 11 * 8(fp)" : : [a1] "r"(a1));
+}
+
+inline uint64 Riscv::peek_a2() {
+    uint64 volatile a2;
+    __asm volatile ("ld %[a2], 12 * 8(fp)" : [a2] "=r"(a2));
+    return a2;
+}
+
+inline void Riscv::replace_a2(uint64 a2) {
+    __asm__ volatile ("sd %[a2], 12 * 8(fp)" : : [a2] "r"(a2));
+}
+
+inline uint64 Riscv::peek_a3() {
+    uint64 volatile a3;
+    __asm volatile ("ld %[a3], 13 * 8(fp)" : [a3] "=r"(a3));
+    return a3;
+}
+
+inline void Riscv::replace_a3(uint64 a3) {
+    __asm__ volatile ("sd %[a3], 13 * 8(fp)" : : [a3] "r"(a3));
+}
+
+inline uint64 Riscv::peek_a4() {
+    uint64 volatile a4;
+    __asm volatile ("ld %[a4], 14 * 8(fp)" : [a4] "=r"(a4));
+    return a4;
+}
+
+inline void Riscv::replace_a4(uint64 a4) {
+    __asm__ volatile ("sd %[a4], 14 * 8(fp)" : : [a4] "r"(a4));
+}
+
+inline uint64 Riscv::r_a0() {
+    uint64 volatile a0;
+    __asm__ volatile ("mv %[a0], a0" : [a0] "=r"(a0));
+    return a0;
+}
+
+inline void Riscv::w_a0(uint64 a0) {
+    __asm__ volatile ("mv a0, %[a0]" : : [a0] "r"(a0));
+}
+
+inline uint64 Riscv::r_a1() {
+    uint64 volatile a1;
+    __asm__ volatile ("mv %[a1], a1" : [a1] "=r"(a1));
+    return a1;
+}
+
+inline void Riscv::w_a1(uint64 a1) {
+    __asm__ volatile ("mv a1, %[a1]" : : [a1] "r"(a1));
+}
+
+inline uint64 Riscv::r_a2() {
+    uint64 volatile a2;
+    __asm__ volatile ("mv %[a2], a2" : [a2] "=r"(a2));
+    return a2;
+}
+
+inline void Riscv::w_a2(uint64 a2) {
+    __asm__ volatile ("mv a2, %[a2]" : : [a2] "r"(a2));
+}
+
+inline uint64 Riscv::r_a3() {
+    uint64 volatile a3;
+    __asm__ volatile ("mv %[a3], a3" : [a3] "=r"(a3));
+    return a3;
+}
+
+inline void Riscv::w_a3(uint64 a3) {
+    __asm__ volatile ("mv a3, %[a3]" : : [a3] "r"(a3));
+}
+
+inline uint64 Riscv::r_a4() {
+    uint64 volatile a4;
+    __asm__ volatile ("mv %[a4], a4" : [a4] "=r"(a4));
+    return a4;
+}
+
+inline void Riscv::w_a4(uint64 a4) {
+    __asm__ volatile ("mv a4, %[a4]" : : [a4] "r"(a4));
+}
 
 inline uint64 Riscv::r_scause() {
     uint64 volatile scause;
