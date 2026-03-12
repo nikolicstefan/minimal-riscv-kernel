@@ -78,6 +78,29 @@ void Riscv::handleSupervisorTrap() {
                 replace_a0(a0);
                 break;
             }
+            case SYSCALL_CODE_THREAD_CREATE: {
+                // retrieve syscall arguments
+                TCB **handle = (TCB **)peek_a1();
+                TCB::StartRoutine startRoutine = (TCB::StartRoutine)peek_a2();
+                void *arg = (void *)peek_a3();
+                // handle syscall
+                *handle = TCB::threadCreate(startRoutine, arg);
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
+            case SYSCALL_CODE_THREAD_EXIT: {
+                // retrieve syscall arguments
+                // (no syscall arguments)
+                // handle syscall
+                TCB::threadExit();
+                // syscall return value in a0
+                // pass syscall return value
+                // override saved a0 register value on the stack
+                uint64 a0 = r_a0();
+                replace_a0(a0);
+                break;
+            }
             case SYSCALL_CODE_THREAD_DISPATCH: {
                 // retrieve syscall arguments
                 // (no syscall arguments)

@@ -7,7 +7,6 @@ extern "C" {
 
 #include "../lib/hw.h"
 
-/*
 #ifdef __cplusplus
 class TCB;
 #else
@@ -15,6 +14,7 @@ typedef struct TCB TCB;
 #endif // __cplusplus
 typedef TCB _thread;
 
+/*
 #ifdef __cplusplus
 class Sem;
 #else
@@ -31,8 +31,7 @@ size_t mem_get_free_space();
 
 size_t mem_get_largest_free_block();
 
-/*
-typedef struct TCB _thread; // without struct?
+typedef TCB _thread; // struct?
 typedef _thread *thread_t;
 
 int thread_create(
@@ -45,6 +44,7 @@ int thread_exit();
 
 void thread_dispatch();
 
+/*
 typedef struct Sem _sem; // without struct?
 typedef _sem *sem_t;
 

@@ -1,22 +1,27 @@
 #include "../h/print.hpp"
+
 #include "../h/Riscv.hpp"
+#include "../h/syscall_c.h"
 #include "../lib/console.h"
 
+uint64 lockPrint = 0;
+
+#define LOCK() while(copy_and_swap(lockPrint, 0, 1)) thread_dispatch()
+#define UNLOCK() while(copy_and_swap(lockPrint, 1, 0))
+
 void printString(char const *string) {
-    // uint64 sstatus = Riscv::r_sstatus();
-    // Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+    LOCK();
 
     while (*string != '\0') {
         __putc(*string);
         string++;
     }
 
-    // Riscv::ms_sstatus(sstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0);
+    UNLOCK();
 }
 
 void printValueDecimal(uint64 value) {
-    // uint64 sstatus = Riscv::r_sstatus();
-    // Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+    LOCK();
 
     static char digits[] = "0123456789";
     char buf[16];
@@ -40,12 +45,11 @@ void printValueDecimal(uint64 value) {
 
     while (--i >= 0) { __putc(buf[i]); }
 
-    // Riscv::ms_sstatus(sstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0);
+    UNLOCK();
 }
 
 void printValueHexadecimal(uint64 value) {
-    // uint64 sstatus = Riscv::r_sstatus();
-    // Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+    LOCK();
 
     static char digits[] = "0123456789abcdef";
     char buf[18];
@@ -63,5 +67,5 @@ void printValueHexadecimal(uint64 value) {
     while (--i >= 0)
         __putc(buf[i]);
 
-    // Riscv::ms_sstatus(sstatus & Riscv::SSTATUS_SIE? Riscv::SSTATUS_SIE : 0);
+    UNLOCK();
 }

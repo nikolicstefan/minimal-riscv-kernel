@@ -43,3 +43,25 @@ size_t mem_get_largest_free_block() {
     uint64 retVal = Riscv::r_a0();
     return (size_t)retVal;
 }
+
+int thread_create(thread_t *handle, void (*start_routine)(void *), void *arg) {
+    syscall(SYSCALL_CODE_THREAD_CREATE, handle, start_routine, arg);
+    // retrieve syscall return value
+    // (no syscall return value)
+    if (*handle == nullptr) return -1;
+    else return 0;
+}
+
+int thread_exit() {
+    syscall(SYSCALL_CODE_THREAD_EXIT);
+    // syscall return value in a0
+    // retrieve syscall return value
+    uint64 retVal = Riscv::r_a0();
+    return (int)retVal;
+}
+
+void thread_dispatch() {
+    syscall(SYSCALL_CODE_THREAD_DISPATCH);
+    // retrieve syscall return value
+    // (no syscall return value)
+}

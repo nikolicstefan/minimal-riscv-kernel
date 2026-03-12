@@ -7,13 +7,15 @@
 
 class TCB {
 public:
-    using Body = void (*)();
+    using StartRoutine = void (*)(void *);
 
     static TCB *running;
 
     ~TCB() { MemoryAllocator::memFree(unalignedStack); }
 
-    static TCB *createThread(Body body);
+    static TCB *threadCreate(StartRoutine startRoutine, void *arg);
+
+    static int threadExit();
 
     static void yield();
 
@@ -41,21 +43,23 @@ private:
 
     static uint64 timeSliceCounter;
 
-    Body body;
+    StartRoutine startRoutine;
+    void *arg;
     uint64 *unalignedStack;
     uint64 *stack;
     Context context;
     uint64 timeSlice;
     bool finished;
 
-    TCB(Body body, uint64 timeSlice) :
-    body(body),
+    TCB(StartRoutine startRoutine, void *arg) :
+    startRoutine(startRoutine),
+    arg(arg),
     unalignedStack(nullptr),
     stack(nullptr),
     context({(uint64)&threadWrapper, 0}),
-    timeSlice(timeSlice),
+    timeSlice(DEFAULT_TIME_SLICE),
     finished(false) {
-        if (body != nullptr) {
+        if (startRoutine != nullptr) {
             uint64 stackSize = DEFAULT_STACK_SIZE * sizeof(uint64) + 15;
             stackSize += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
             stackSize /= MEM_BLOCK_SIZE;

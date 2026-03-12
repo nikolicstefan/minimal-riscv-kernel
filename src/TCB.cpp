@@ -6,8 +6,17 @@ TCB *TCB::running = nullptr;
 
 uint64 TCB::timeSliceCounter = 0;
 
-TCB *TCB::createThread(Body body) {
-    return new TCB(body, DEFAULT_TIME_SLICE);
+TCB *TCB::threadCreate(StartRoutine startRoutine, void *arg) {
+    return new TCB(startRoutine, arg);
+}
+
+int TCB::threadExit() {
+    if (running != nullptr) {
+        running->setFinished(true);
+        dispatch();
+        return 0; // unreachable
+    }
+    return -1;
 }
 
 void TCB::yield() {
@@ -25,9 +34,9 @@ void TCB::dispatch() {
 
 void TCB::threadWrapper() {
     Riscv::popSppSpie();
-    running->body();
+    running->startRoutine(running->arg);
     running->setFinished(true);
-    yield();
+    dispatch();
 }
 
 void *TCB::operator new(size_t size) {
