@@ -99,6 +99,10 @@ public:
         return tail->data;
     }
 
+    bool isEmpty() const {
+        return head == nullptr;
+    }
+
     void *operator new(size_t size) {
         size += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
         size /= MEM_BLOCK_SIZE;

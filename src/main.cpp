@@ -2,27 +2,35 @@
 #include "../h/print.hpp"
 #include "../h/Riscv.hpp"
 #include "../h/TCB.hpp"
-#include "../h/workers_cpp.hpp"
+
+void userMain();
+
+void userMainWrapper(void *) {
+    userMain();
+}
 
 int main() {
     MemoryAllocator::memInit();
-    Riscv::w_stvec((uint64) &Riscv::supervisorTrapVector | 0x1);
+    Riscv::w_stvec((uint64)&Riscv::supervisorTrapVector | 0x1);
 
-    TCB *mainThread = TCB::threadCreate(nullptr, nullptr);
-    TCB::running = mainThread;
+    TCB *threads[2];
 
-    Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+    threads[0] = TCB::threadCreate(nullptr, nullptr);
+    TCB::running = threads[0];
 
-    TCB *workersThread = TCB::threadCreate(workersCPP, nullptr);
+    // Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
-    while (!workersThread->isFinished()) {
+    threads[1] = TCB::threadCreate(&userMainWrapper, nullptr);
+
+    while (!threads[1]->isFinished()) {
         TCB::yield();
     }
 
-    delete mainThread;
-    delete workersThread;
+    for (TCB* &thread: threads) {
+        delete thread;
+    }
 
-    printString("Finished\n");
+    printCharConstArray("Finished\n");
     Riscv::stopEmulator();
 
     return 0;

@@ -35,6 +35,7 @@ public:
 
 private:
     friend class Riscv;
+    friend class CountingSemaphore;
 
     struct Context {
         uint64 ra;
@@ -56,7 +57,7 @@ private:
     arg(arg),
     unalignedStack(nullptr),
     stack(nullptr),
-    context({(uint64)&threadWrapper, 0}),
+    context({0, 0}),
     timeSlice(DEFAULT_TIME_SLICE),
     finished(false) {
         if (startRoutine != nullptr) {
@@ -65,6 +66,7 @@ private:
             stackSize /= MEM_BLOCK_SIZE;
             unalignedStack = (uint64 *)MemoryAllocator::memAlloc(stackSize);
             stack = (uint64 *)((uint64)((uint8 *)unalignedStack + 15) & ~0xFUL);
+            context.ra = (uint64)&threadWrapper;
             context.sp = (uint64)&stack[DEFAULT_STACK_SIZE];
             Scheduler::put(this);
         }

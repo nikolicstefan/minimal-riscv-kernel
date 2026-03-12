@@ -45,8 +45,37 @@ void Thread::dispatch() {
     thread_dispatch();
 }
 
+int Thread::sleep(time_t period) {
+    return time_sleep(period);
+}
+
 void Thread::runWrapper(void *arg) {
     if (arg == nullptr) return;
     Thread *thread = (Thread *)arg;
     thread->run();
+}
+
+Semaphore::Semaphore(unsigned init) {
+    sem_open(&myHandle, init);
+}
+
+Semaphore::~Semaphore() {
+    sem_close(myHandle);
+    myHandle = nullptr;
+}
+
+int Semaphore::wait() {
+    return sem_wait(myHandle);
+}
+
+int Semaphore::signal() {
+    return sem_signal(myHandle);
+}
+
+char Console::getc() {
+    return ::getc();
+}
+
+void Console::putc(char c) {
+    ::putc(c);
 }

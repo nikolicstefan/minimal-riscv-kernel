@@ -1,5 +1,6 @@
 #include "../h/TCB.hpp"
 
+#include "../h/print.hpp"
 #include "../h/Riscv.hpp"
 
 TCB *TCB::running = nullptr;
@@ -28,15 +29,16 @@ void TCB::dispatch() {
     TCB *old = running;
     if (!old->isFinished()) { Scheduler::put(old); }
     running = Scheduler::get();
-
     contextSwitch(&old->context, &running->context);
 }
 
 void TCB::threadWrapper() {
+    Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
     Riscv::popSppSpie();
+    // U-mode
     running->startRoutine(running->arg);
     running->setFinished(true);
-    dispatch();
+    yield();
 }
 
 void *TCB::operator new(size_t size) {

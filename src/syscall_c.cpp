@@ -65,3 +65,53 @@ void thread_dispatch() {
     // retrieve syscall return value
     // (no syscall return value)
 }
+
+int sem_open(sem_t *handle, unsigned init) {
+    syscall(SYSCALL_CODE_SEM_OPEN, handle, init);
+    // retrieve syscall return value
+    // (no syscall return value)
+    if (*handle == nullptr) return -1;
+    else return 0;
+}
+
+int sem_close(sem_t handle) {
+    if (handle == nullptr) return -1;
+    syscall(SYSCALL_CODE_SEM_CLOSE, handle);
+    // retrieve syscall return value
+    // (no syscall return value)
+    return 0;
+}
+
+int sem_wait(sem_t id) {
+    if (id == nullptr) return -1;
+    syscall(SYSCALL_CODE_SEM_WAIT, id);
+    // retrieve syscall return value
+    // (no syscall return value)
+    return 0;
+}
+
+int sem_signal(sem_t id) {
+    if (id == nullptr) return -1;
+    syscall(SYSCALL_CODE_SEM_SIGNAL, id);
+    // retrieve syscall return value
+    // (no syscall return value)
+    return 0;
+}
+
+int time_sleep(time_t period) {
+    return -1;
+}
+
+char getc() {
+    syscall(SYSCALL_CODE_GETC);
+    // syscall return value in a0
+    // retrieve syscall return value
+    uint64 retVal = Riscv::r_a0();
+    return (int)retVal;
+}
+
+void putc(char c) {
+    syscall(SYSCALL_CODE_PUTC, c);
+    // retrieve syscall return value
+    // (no syscall return value)
+}

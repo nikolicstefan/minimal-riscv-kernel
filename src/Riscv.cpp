@@ -1,5 +1,6 @@
 #include "../h/Riscv.hpp"
 
+#include "../h/CountingSemaphore.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/print.hpp"
 #include "../h/syscall_codes.hpp"
@@ -110,6 +111,70 @@ void Riscv::handleSupervisorTrap() {
                 // (no syscall return value)
                 break;
             }
+            case SYSCALL_CODE_SEM_OPEN: {
+                // retrieve syscall arguments
+                CountingSemaphore **handle = (CountingSemaphore **)peek_a1();
+                uint32 init = (uint32)peek_a2();
+                // handle syscall
+                *handle = new CountingSemaphore(init);
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
+            case SYSCALL_CODE_SEM_CLOSE: {
+                // retrieve syscall arguments
+                CountingSemaphore *handle = (CountingSemaphore *)peek_a1();
+                // handle syscall
+                delete handle;
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
+            case SYSCALL_CODE_SEM_WAIT: {
+                // retrieve syscall arguments
+                CountingSemaphore *id = (CountingSemaphore *)peek_a1();
+                // handle syscall
+                id->semWait();
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
+            case SYSCALL_CODE_SEM_SIGNAL: {
+                // retrieve syscall arguments
+                CountingSemaphore *id = (CountingSemaphore *)peek_a1();
+                // handle syscall
+                id->semSignal();
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
+            case SYSCALL_CODE_GETC: {
+                // retrieve syscall arguments
+                // (no syscall arguments)
+                // handle syscall
+                __getc();
+                // syscall return value in a0
+                // pass syscall return value
+                // override saved a0 register value on the stack
+                uint64 a0 = r_a0();
+                replace_a0(a0);
+                break;
+            }
+            case SYSCALL_CODE_PUTC: {
+                // retrieve syscall arguments
+                char c = (char)peek_a1();
+                // handle syscall
+                __putc(c);
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
+            default: {
+                // unexpected syscall code
+                printErrorDetails();
+                stopEmulator();
+                break;
+            }
         }
         // restore sstatus register from the current thread's stack
         w_sstatus(sstatus);
@@ -138,19 +203,19 @@ void Riscv::handleSupervisorTrap() {
 }
 
 void Riscv::printErrorDetails() {
-    printString("\n");
+    printCharConstArray("\n");
     // print scause
     uint64 scause = r_scause();
-    printString("scause ");
+    printCharConstArray("scause ");
     printValueHexadecimal(scause);
     // print sepc
     uint64 sepc = r_sepc();
-    printString("\nsepc=");
+    printCharConstArray("\nsepc=");
     printValueHexadecimal(sepc);
     // print stval
     uint64 stval = r_stval();
-    printString(" stval=");
+    printCharConstArray(" stval=");
     printValueHexadecimal(stval);
     // print panic
-    printString("\npanic: kerneltrap\n");
+    printCharConstArray("\npanic: kerneltrap\n");
 }

@@ -8,7 +8,6 @@ _ZN5Riscv20supervisorTrapVectorEv:
         j supervisorTrapHandler
     .endr
 
-.align 4
 supervisorTrapHandler:
     # push all registers to stack
     addi sp, sp, -256

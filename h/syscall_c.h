@@ -14,14 +14,12 @@ typedef struct TCB TCB;
 #endif // __cplusplus
 typedef TCB _thread;
 
-/*
 #ifdef __cplusplus
 class Sem;
 #else
 typedef struct Sem Sem;
 #endif // __cplusplus
 typedef Sem _sem;
-*/
 
 void *mem_alloc(size_t size); // size in bytes
 
@@ -31,7 +29,7 @@ size_t mem_get_free_space();
 
 size_t mem_get_largest_free_block();
 
-typedef TCB _thread; // struct?
+typedef TCB _thread;
 typedef _thread *thread_t;
 
 int thread_create(
@@ -44,8 +42,7 @@ int thread_exit();
 
 void thread_dispatch();
 
-/*
-typedef struct Sem _sem; // without struct?
+typedef Sem _sem;
 typedef _sem *sem_t;
 
 int sem_open(
@@ -68,7 +65,6 @@ const int EOF = -1;
 char getc();
 
 void putc(char);
-*/
 
 #ifdef __cplusplus
 }

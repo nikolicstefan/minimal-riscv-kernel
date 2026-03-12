@@ -21,7 +21,7 @@ public:
 
     static void dispatch();
 
-    // static int sleep(time_t);
+    static int sleep(time_t);
 
 protected:
     Thread();
@@ -36,7 +36,6 @@ private:
     static void runWrapper(void *arg);
 };
 
-/*
 class Semaphore {
 public:
     Semaphore(unsigned init = 1);
@@ -51,6 +50,7 @@ private:
     sem_t myHandle;
 };
 
+/*
 class PeriodicThread : public Thread {
 public:
     void terminate();
