@@ -18,7 +18,7 @@ int main() {
     threads[0] = TCB::threadCreate(nullptr, nullptr);
     TCB::running = threads[0];
 
-    // Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+    Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
 
     threads[1] = TCB::threadCreate(&userMainWrapper, nullptr);
 

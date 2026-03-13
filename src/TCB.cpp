@@ -7,6 +7,27 @@ TCB *TCB::running = nullptr;
 
 uint64 TCB::timeSliceCounter = 0;
 
+TCB::TCB(StartRoutine startRoutine, void *arg) :
+    startRoutine(startRoutine),
+    arg(arg),
+    unalignedStack(nullptr),
+    stack(nullptr),
+    context({0, 0}),
+    timeSlice(DEFAULT_TIME_SLICE),
+    sleepInterval(0),
+    finished(false) {
+    if (startRoutine != nullptr) {
+        uint64 stackSize = DEFAULT_STACK_SIZE * sizeof(uint64) + 15;
+        stackSize += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
+        stackSize /= MEM_BLOCK_SIZE;
+        unalignedStack = (uint64 *)MemoryAllocator::memAlloc(stackSize);
+        stack = (uint64 *)((uint64)((uint8 *)unalignedStack + 15) & ~0xFUL);
+        context.ra = (uint64)&threadWrapper;
+        context.sp = (uint64)&stack[DEFAULT_STACK_SIZE];
+        Scheduler::put(this);
+    }
+}
+
 TCB *TCB::threadCreate(StartRoutine startRoutine, void *arg) {
     return new TCB(startRoutine, arg);
 }
@@ -18,6 +39,15 @@ int TCB::threadExit() {
         return 0; // unreachable
     }
     return -1;
+}
+
+void TCB::timeSleep(uint64 sleepInterval) {
+    if (sleepInterval == 0) return;
+    running->setSleepInterval(sleepInterval);
+    TCB *old = running;
+    Scheduler::suspend(old);
+    running = Scheduler::get();
+    contextSwitch(&old->context, &running->context);
 }
 
 void TCB::yield() {

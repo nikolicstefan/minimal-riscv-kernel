@@ -25,7 +25,7 @@ protected:
 private:
     friend class RISCV;
 
-    List<TCB> blockedThreadQueue;
+    List<TCB> blockedThreadsQueue;
 };
 
 #endif // COUNTINGSEMAPHORE_HPP

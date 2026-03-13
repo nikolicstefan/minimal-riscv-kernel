@@ -14,10 +14,10 @@ struct thread_data {
 
 static volatile int threadEnd = 0;
 
-class ProducerKeyborad : public Thread {
+class ProducerKeyboard : public Thread {
     thread_data *td;
 public:
-    ProducerKeyborad(thread_data *_td) : Thread(), td(_td) {}
+    ProducerKeyboard(thread_data *_td) : Thread(), td(_td) {}
 
     void run() override {
         int key;
@@ -119,7 +119,7 @@ void testConsumerProducer() {
     threadData[0].id = 0;
     threadData[0].buffer = buffer;
     threadData[0].sem = waitForAll;
-    producers[0] = new ProducerKeyborad(&threadData[0]);
+    producers[0] = new ProducerKeyboard(&threadData[0]);
     producers[0]->start();
 
     for (int i = 1; i < threadNum; i++) {

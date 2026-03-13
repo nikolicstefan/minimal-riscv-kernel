@@ -6,7 +6,7 @@
 
 template<typename T>
 class List {
-private:
+protected:
     struct Elem {
         T *data;
         Elem *next;

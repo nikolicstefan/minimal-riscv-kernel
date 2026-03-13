@@ -99,7 +99,10 @@ int sem_signal(sem_t id) {
 }
 
 int time_sleep(time_t period) {
-    return -1;
+    syscall(SYSCALL_CODE_TIME_SLEEP, period);
+    // syscall return value in a0
+    // (no syscall return value)
+    return 0;
 }
 
 char getc() {

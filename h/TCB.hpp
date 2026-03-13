@@ -17,6 +17,8 @@ public:
 
     static int threadExit();
 
+    static void timeSleep(uint64 sleepInterval);
+
     static void yield();
 
     bool isFinished() const { return finished; }
@@ -24,6 +26,12 @@ public:
     void setFinished(bool value) { finished = value; }
 
     uint64 getTimeSlice() const { return timeSlice; }
+
+    uint64 getSleepInterval() const { return sleepInterval; }
+
+    void setSleepInterval(uint64 value) { sleepInterval = value; }
+
+    void decreaseSleepInterval(uint64 value) { sleepInterval -= value; }
 
     void *operator new(size_t size);
 
@@ -50,27 +58,10 @@ private:
     uint64 *stack;
     Context context;
     uint64 timeSlice;
+    uint64 sleepInterval;
     bool finished;
 
-    TCB(StartRoutine startRoutine, void *arg) :
-    startRoutine(startRoutine),
-    arg(arg),
-    unalignedStack(nullptr),
-    stack(nullptr),
-    context({0, 0}),
-    timeSlice(DEFAULT_TIME_SLICE),
-    finished(false) {
-        if (startRoutine != nullptr) {
-            uint64 stackSize = DEFAULT_STACK_SIZE * sizeof(uint64) + 15;
-            stackSize += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
-            stackSize /= MEM_BLOCK_SIZE;
-            unalignedStack = (uint64 *)MemoryAllocator::memAlloc(stackSize);
-            stack = (uint64 *)((uint64)((uint8 *)unalignedStack + 15) & ~0xFUL);
-            context.ra = (uint64)&threadWrapper;
-            context.sp = (uint64)&stack[DEFAULT_STACK_SIZE];
-            Scheduler::put(this);
-        }
-    }
+    TCB(StartRoutine startRoutine, void *arg);
 
     static void threadWrapper();
 

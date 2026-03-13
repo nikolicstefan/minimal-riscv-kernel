@@ -148,6 +148,15 @@ void Riscv::handleSupervisorTrap() {
                 // (no syscall return value)
                 break;
             }
+            case SYSCALL_CODE_TIME_SLEEP: {
+                // retrieve syscall arguments
+                uint64 period = (uint64)peek_a1();
+                // handle syscall
+                TCB::timeSleep(period);
+                // pass syscall return value
+                // (no syscall return value)
+                break;
+            }
             case SYSCALL_CODE_GETC: {
                 // retrieve syscall arguments
                 // (no syscall arguments)
@@ -183,6 +192,9 @@ void Riscv::handleSupervisorTrap() {
     } else if (scause == 0x8000000000000001UL) {
         // interrupt: yes; cause code: supervisor software interrupt (CLINT; machine timer interrupt)
         mc_sip(SIP_SSIP);
+        // update suspended threads
+        Scheduler::updateSuspended();
+        // update time slice
         TCB::timeSliceCounter++;
         if (TCB::timeSliceCounter >= TCB::running->getTimeSlice()) {
             uint64 volatile sepc = r_sepc();
