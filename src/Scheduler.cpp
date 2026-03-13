@@ -20,8 +20,6 @@ void Scheduler::suspend(TCB *tcb) {
 void Scheduler::updateSuspended() {
     if (!suspendedThreadsQueue.isEmpty()) {
         suspendedThreadsQueue.peekFirst()->decreaseSleepInterval(1);
-        // printValueDecimal(suspendedThreadsQueue.peekFirst()->getSleepInterval());
-        // printCharConstArray("\n");
         while (!suspendedThreadsQueue.isEmpty() && suspendedThreadsQueue.peekFirst()->getSleepInterval() == 0) {
             put(suspendedThreadsQueue.removeFirst());
         }

@@ -22,7 +22,7 @@ int main() {
 
     threads[1] = TCB::threadCreate(&userMainWrapper, nullptr);
 
-    while (!threads[1]->isFinished()) {
+    while (!threads[1]->getFinished()) {
         TCB::yield();
     }
 

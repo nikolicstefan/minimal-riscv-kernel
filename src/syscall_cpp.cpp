@@ -55,7 +55,7 @@ void Thread::runWrapper(void *arg) {
     thread->run();
 }
 
-Semaphore::Semaphore(unsigned init) {
+Semaphore::Semaphore(unsigned init) : myHandle(nullptr) {
     sem_open(&myHandle, init);
 }
 
@@ -70,6 +70,19 @@ int Semaphore::wait() {
 
 int Semaphore::signal() {
     return sem_signal(myHandle);
+}
+
+void PeriodicThread::terminate() {
+    shouldTerminate = true;
+}
+
+PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period), shouldTerminate(false) {}
+
+void PeriodicThread::run() {
+    while (!shouldTerminate) {
+        periodicActivation();
+        sleep(period);
+    }
 }
 
 char Console::getc() {

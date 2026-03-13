@@ -50,7 +50,6 @@ private:
     sem_t myHandle;
 };
 
-/*
 class PeriodicThread : public Thread {
 public:
     void terminate();
@@ -64,8 +63,8 @@ protected:
 
 private:
     time_t period;
+    volatile bool shouldTerminate;
 };
-*/
 
 class Console {
 public:

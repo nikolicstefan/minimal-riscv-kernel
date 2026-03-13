@@ -3,6 +3,7 @@
 #include "../h/CountingSemaphore.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/print.hpp"
+#include "../h/Scheduler.hpp"
 #include "../h/syscall_codes.hpp"
 #include "../h/TCB.hpp"
 #include "../lib/console.h"

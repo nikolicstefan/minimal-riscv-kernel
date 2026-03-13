@@ -2,7 +2,6 @@
 #define TCB_HPP
 
 #include "MemoryAllocator.hpp"
-#include "Scheduler.hpp"
 #include "../lib/hw.h"
 
 class TCB {
@@ -21,9 +20,9 @@ public:
 
     static void yield();
 
-    bool isFinished() const { return finished; }
+    bool getFinished() const { return isFinished; }
 
-    void setFinished(bool value) { finished = value; }
+    void setFinished(bool value) { isFinished = value; }
 
     uint64 getTimeSlice() const { return timeSlice; }
 
@@ -59,7 +58,7 @@ private:
     Context context;
     uint64 timeSlice;
     uint64 sleepInterval;
-    bool finished;
+    bool isFinished;
 
     TCB(StartRoutine startRoutine, void *arg);
 

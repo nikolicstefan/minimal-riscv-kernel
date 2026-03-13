@@ -1,21 +1,21 @@
 #include "../h/TCB.hpp"
 
-#include "../h/print.hpp"
 #include "../h/Riscv.hpp"
+#include "../h/Scheduler.hpp"
 
 TCB *TCB::running = nullptr;
 
 uint64 TCB::timeSliceCounter = 0;
 
 TCB::TCB(StartRoutine startRoutine, void *arg) :
-    startRoutine(startRoutine),
-    arg(arg),
-    unalignedStack(nullptr),
-    stack(nullptr),
-    context({0, 0}),
-    timeSlice(DEFAULT_TIME_SLICE),
-    sleepInterval(0),
-    finished(false) {
+startRoutine(startRoutine),
+arg(arg),
+unalignedStack(nullptr),
+stack(nullptr),
+context({0, 0}),
+timeSlice(DEFAULT_TIME_SLICE),
+sleepInterval(0),
+isFinished(false) {
     if (startRoutine != nullptr) {
         uint64 stackSize = DEFAULT_STACK_SIZE * sizeof(uint64) + 15;
         stackSize += sizeof(MemoryAllocator::MemSegment) + MEM_BLOCK_SIZE - 1;
@@ -57,7 +57,7 @@ void TCB::yield() {
 
 void TCB::dispatch() {
     TCB *old = running;
-    if (!old->isFinished()) { Scheduler::put(old); }
+    if (!old->getFinished()) { Scheduler::put(old); }
     running = Scheduler::get();
     contextSwitch(&old->context, &running->context);
 }
