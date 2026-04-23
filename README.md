@@ -15,19 +15,19 @@ A minimal preemptive multi-threaded kernel for the RISC-V architecture (RV64IMA)
 | Property | Value |
 |---|---|
 | ISA | RISC-V RV64IMA |
-| Privilege levels | U-mode (user), S-mode (supervisor) |
 | Memory | 128 MB |
 | CPU cores | 1 |
 | Timer frequency | 10 Hz (100 ms period) |
+| Privilege levels | U-mode (user), S-mode (supervisor) |
 
 **Host / build environment**
 
 | Property | Value |
 |---|---|
-| Emulator | `qemu-system-riscv64` |
-| Host OS (xv6) | Stripped xv6 - single process, full physical address space |
-| Compiler | `riscv64-linux-gnu-g++` |
+| Host OS | Stripped xv6 - single process, full physical address space |
 | C++ standard | C++11 |
+| Compiler | `riscv64-linux-gnu-g++` |
+| Emulator | `qemu-system-riscv64` |
 
 ---
 
