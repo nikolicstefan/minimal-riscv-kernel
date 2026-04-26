@@ -1,10 +1,14 @@
-# minimal-riscv-kernel
+# Minimal RISC-V Kernel
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A preemptive, multi-threaded kernel for RISC-V with time-sharing scheduling and interrupt-driven context switching, implemented as part of the *Operating Systems 1* course at the School of Electrical Engineering, University of Belgrade, 2024/2025.
+
+---
+
+## Overview
 
 A minimal preemptive multi-threaded kernel for the RISC-V architecture (RV64IMA), implemented in C++ and RISC-V assembly. The kernel runs as a statically linked library-style kernel alongside a user application in a single shared address space, targeting embedded-style environments without dynamic loading.
-
-*Course project for Operating Systems 1 at the School of Electrical Engineering, University of Belgrade (ETF), 2024/2025.*
 
 ---
 
@@ -37,7 +41,7 @@ A minimal preemptive multi-threaded kernel for the RISC-V architecture (RV64IMA)
 - **Thread management** - creation, dispatch, and exit of user-space threads with per-thread stacks
 - **Semaphores** - counting semaphores with blocking `wait` / `signal` semantics
 - **Preemptive scheduling** - FIFO round-robin scheduler with time-slice preemption driven by a hardware timer interrupt
-- **Asynchronous context switch** - context preemption on timer and keyboard (UART) interrupts
+- **Asynchronous context switching** - context preemption on timer and keyboard (UART) interrupts
 - **`time_sleep`** - timer-based thread suspension using a delta-list of sleeping threads
 - **Console I/O** - buffered, interrupt-driven `getc` / `putc` via a UART serial controller *(not yet implemented)*
 - **Three-layer kernel interface** - ABI (via `ecall`), C API, and C++ OO API
@@ -46,7 +50,7 @@ A minimal preemptive multi-threaded kernel for the RISC-V architecture (RV64IMA)
 
 ## Architecture
 
-The kernel is structured as a monolithic, single-address-space library kernel:
+The kernel is structured as a monolithic kernel executing in a single shared address space:
 
 ```
 User application (app.lib)
